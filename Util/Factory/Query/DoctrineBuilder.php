@@ -52,7 +52,7 @@ class DoctrineBuilder implements QueryInterface
     protected $renderer = NULL;
 
     /** @var boolean */
-    protected $search = FALSE;
+    protected $search = TRUE;
 
     /**
      * class constructor 
@@ -78,12 +78,15 @@ class DoctrineBuilder implements QueryInterface
         {
             $request       = $this->request;
             $search_fields = array_values($this->fields);
+            $query = $request->get("sSearch");
+
             foreach ($search_fields as $i => $search_field)
             {
                 $search_param = $request->get("sSearch_{$i}");
-                if ($request->get("sSearch_{$i}") !== false && !empty($search_param))
+
+                if ($request->get("sSearch") !== false && !empty($query))
                 {
-                    $queryBuilder->andWhere(" $search_field like '%{$request->get("sSearch_{$i}")}%' ");
+                    $queryBuilder->orWhere(" $search_field like '%{$query}%' ");
                 }
             }
         }
