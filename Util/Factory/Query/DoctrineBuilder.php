@@ -86,7 +86,9 @@ class DoctrineBuilder implements QueryInterface
 
                 if ($request->get("sSearch") !== false && !empty($query))
                 {
-                    $queryBuilder->orWhere(" $search_field like '%{$query}%' ");
+                    if(!strstr($search_field, ' as ')) {
+                        $queryBuilder->orWhere(" $search_field like '%{$query}%' ");
+                    }
                 }
             }
         }
