@@ -78,6 +78,8 @@ class DoctrineBuilder implements QueryInterface
         {
             $request       = $this->request;
             $search_fields = array_values($this->fields);
+            $like          = array();
+            $search        = false;
             $query = $request->get("sSearch");
 
             foreach ($search_fields as $i => $search_field)
@@ -87,9 +89,15 @@ class DoctrineBuilder implements QueryInterface
                 if ($request->get("sSearch") !== false && !empty($query))
                 {
                     if(!strstr($search_field, ' as ')) {
-                        $queryBuilder->orWhere(" $search_field like '%{$query}%' ");
+                        $search = true;
+                        $like[] = $queryBuilder->expr()->like($search_field, ':search');
                     }
                 }
+            }
+
+            if ($search) {
+                $queryBuilder->andWhere(call_user_func_array(array($queryBuilder->expr(), 'orX'), $like));
+                $queryBuilder->setParameter('search', '%'.$query.'%');
             }
         }
     }
