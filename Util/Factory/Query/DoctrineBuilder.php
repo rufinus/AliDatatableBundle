@@ -95,7 +95,7 @@ class DoctrineBuilder implements QueryInterface
                 }
             }
 
-            if ($search) {
+            if ($search && count($like) > 0) {
                 $queryBuilder->andWhere(call_user_func_array(array($queryBuilder->expr(), 'orX'), $like));
                 $queryBuilder->setParameter('search', '%'.$query.'%');
             }
