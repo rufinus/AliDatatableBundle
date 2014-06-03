@@ -16,7 +16,7 @@ This bundle provides a way to make a projection of a doctrine2 entity to a power
  * support of custom twig/phpClosure renderers.
  * support of custom grouped actions.
  
-###### Soon : support of ODM (MongoDB).
+###### Soon : support of ODM (MongoDB) : developement under progress in the "mongodb" branch.
 
 <div style="text-align:center"><img alt="Screenshot" src="https://github.com/AliHichem/AliDatatableBundle/raw/master/Resources/public/images/sample_01.png"></div>
 
@@ -44,7 +44,7 @@ This bundle provides a way to make a projection of a doctrine2 entity to a power
 
 ### Installation
 
-Installation is a quick (I promise!) 7 step process:
+Installation is a quick (I promise!) 3 step process:
 
 1. [Download AliDatatableBundle using composer](#step-1-download-alidatatablebundle)
 2. [Enable the Bundle](#step-2--enable-the-bundle)
@@ -164,12 +164,12 @@ private function _datatable()
                 ->setFields(
                         array(
                             "Name"          => 'x.name',                        // Declaration for fields: 
-                            "Adress"        => 'x.adress',                      //      "label" => "alias.field_attribute_for_dql"
+                            "Address"        => 'x.address',                    //      "label" => "alias.field_attribute_for_dql"
                             "_identifier_"  => 'x.id')                          // you have to put the identifier field without label. Do not replace the "_identifier_"
                         )
                 ->setWhere(                                                     // set your dql where statement
-                     'x.adress = :adress',
-                     array('adress' => 'Paris') 
+                     'x.address = :address',
+                     array('address' => 'Paris') 
                 )
                 ->setOrder("x.created", "desc")                                 // it's also possible to set the default order
                 ->setHasAction(true);                                           // you can disable action column from here by setting "false".
@@ -239,7 +239,7 @@ private function _datatable()
                 ->setFields(
                         array(
                             "Name"          => 'x.name',                        // Declaration for fields: 
-                            "Adress"        => 'x.adress',                      //      "label" => "alias.field_attribute_for_dql"
+                            "Address"        => 'x.address',                    //      "label" => "alias.field_attribute_for_dql"
                             "Group"         => 'g.name',
                             "Team"          => 't.name',
                             "_identifier_"  => 'x.id')                          // you have to put the identifier field without label. Do not replace the "_identifier_"
@@ -247,8 +247,8 @@ private function _datatable()
                 ->addJoin('x.group', 'g', \Doctrine\ORM\Query\Expr\Join::INNER_JOIN)
                 ->addJoin('x.team', 't', \Doctrine\ORM\Query\Expr\Join::INNER_JOIN)
                 ->setWhere(                                                     // set your dql where statement
-                     'x.adress = :adress',
-                     array('adress' => 'Paris') 
+                     'x.address = :address',
+                     array('address' => 'Paris') 
                 )
                 ->setOrder("x.created", "desc")                                 // it's also possible to set the default order
                 ->setHasAction(true);                                           // you can disable action column from here by setting "false".
@@ -383,6 +383,16 @@ private function _datatable()
 }
 ```
 
+In a twig renderer you can have access the the field value using dt_item variable
+```
+{{ dt_item }}
+```
+or access the entire entity object using dt_obj variable
+```
+<a href="{{ path('route_to_user_edit',{ 'user_id' : dt_obj.id }) }}" > {{ dt_obj.username }} </a>
+```
+NOTE: be careful of LAZY LOADING when using dt_obj !
+
 **PHP Closures**
 
 Assuming the example above, you can set your custom fields renderer using [PHP Closures](http://php.net/manual/en/class.closure.php).
@@ -401,7 +411,7 @@ private function _datatable()
                 ->setFields(
                         array(
                             "Name"          => 'x.name',                        // Declaration for fields: 
-                            "Adress"        => 'x.adress',                      //      "label" => "alias.field_attribute_for_dql"
+                            "Address"        => 'x.address',                    //      "label" => "alias.field_attribute_for_dql"
                             "_identifier_"  => 'x.id')                          // you have to put the identifier field without label. Do not replace the "_identifier_"
                         )
                 ->setRenderer(
@@ -409,7 +419,7 @@ private function _datatable()
                     {
                         foreach ($data as $key => $value)
                         {
-                            if ($key == 1)                                      // 1 => adress field
+                            if ($key == 1)                                      // 1 => address field
                             {
                                 $data[$key] = $controller_instance
                                         ->get('templating')
